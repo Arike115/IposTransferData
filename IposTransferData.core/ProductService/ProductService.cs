@@ -19,7 +19,7 @@ namespace IposTransferData.core.ProductService
 
         public Task<IEnumerable<CategoryDto>> GetCategory()
         {
-            var sql = @"select * From Category ca
+            var sql = @"select TOP 20 From Category ca
                         WHERE ca.IsDeleted <> 1
                         ORDER BY ca.MOdifiedOn DESC";
 
@@ -30,7 +30,7 @@ namespace IposTransferData.core.ProductService
 
         public Task<IEnumerable<ProductDto>> GetProductsByCategoryId(int category_UId)
         {
-            var sql = @"select * From Product po
+            var sql = @"select TOP 20 From Product po
                         WHERE po.Category_UId = @category_UId";
             var Product = _db.GetData<ProductDto, dynamic>(sql, new { Category_UId = category_UId });
             return Product;
