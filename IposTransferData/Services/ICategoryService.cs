@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace IposTransferData.CategoryServices
+namespace IposTransferData.Services
 {
     public interface ICategoryService
     {

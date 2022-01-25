@@ -2,12 +2,15 @@
 using IposTransferData.DataAccess;
 using System;
 using System.Data.SqlClient;
-using IposTransferData.CategoryServices;
-using IposTransferData.ProductServices;
+using IposTransferData.Services;
+using IposTransferData.Services;
 using System.Threading.Tasks;
 using IposTransferData.Model;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace IposTransferData
 {
@@ -15,36 +18,39 @@ namespace IposTransferData
     {
         static Program()
         {
-            connectionString = "Server=DESKTOP-M3U3Q02\\S_SQLEXPRESS;Database=Iposv3;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=True";
-            destinationString = "Server=DESKTOP-M3U3Q02\\S_SQLEXPRESS;Database=IposDataRetrieved;Trusted_Connection=true;MultipleActiveResultSets=false;TrustServerCertificate=True";
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false);
+
+            Configuration = builder.Build();
+
+            SqlConnection = new SqlConnection(Configuration.GetConnectionString("Source"));
+            DestinationConnection = new SqlConnection(Configuration.GetConnectionString("Destination"));
         }
 
-        public static string connectionString;
-        public static string destinationString;
-        public static SqlConnection SqlConnection { get; set; } = new SqlConnection(connectionString);
-        public static SqlConnection DestinationConnection { get; set; } = new SqlConnection(destinationString);
+        public static SqlConnection SqlConnection { get; }
+        public static SqlConnection DestinationConnection { get; }
+        public static IConfiguration Configuration { get; private set; }
+        public static ServiceProvider ServiceProvider { get; private set; }
+
         async static Task Main(string[] args)
         {
-           await ProcessProducts();
-           await ProcessCategory();
+            GetServiceProvider();
+
+            await ProcessProducts();
+            await ProcessCategory();
         }
 
         public async static Task ProcessProducts()
         {
-            IDataDapperService dataDapperService = new DataDapperService(SqlConnection, DestinationConnection);
-            IProductService productService = new ProductService(dataDapperService);
+            var productService = ServiceProvider.GetService<IProductService>();
             var items = await productService.GetProducts();
             Console.WriteLine(items);
             //var product = items;
             var filtereditem = new List<Item>();
-            
-            foreach(var product in items)
+
+            foreach (var product in items)
             {
-                //if (items.Any())
-                //{
-                //   Console.WriteLine("Item name{0} already exists",product.Name);
-                //    return;
-                //}
                 await productService.InsertProductData(
                    Guid.NewGuid(),
                     product.Barcode,
@@ -71,28 +77,17 @@ namespace IposTransferData
                 filtereditem.Add((Item)product);
                 var total = filtereditem.ToList();
                 Console.WriteLine("Item Number:{0}", total.Count);
-
-                
-
             }
-            
-
-
-
-
-
         }
-
 
         public async static Task ProcessCategory()
         {
-            IDataDapperService dataDapperService = new DataDapperService(SqlConnection, DestinationConnection);
-            ICategoryService categoryService = new CategoryService(dataDapperService);
+            var categoryService = ServiceProvider.GetService<ICategoryService>();
             var category = await categoryService.GetCategory();
             Console.WriteLine(category);
 
             var filteredcat = new List<Category>();
-            foreach ( var cat in category)
+            foreach (var cat in category)
             {
                 await categoryService.InsertCategoryData(
                   Guid.NewGuid(),
@@ -107,11 +102,27 @@ namespace IposTransferData
                 filteredcat.Add((Category)cat);
                 var total = filteredcat.ToList();
                 Console.WriteLine("Item Number:{0}", total.Count);
-
-
             }
         }
 
+        private static void GetServiceProvider()
+        {
+            //setup our DI
+            ServiceProvider = new ServiceCollection()
+            .AddSingleton<ICategoryService>((provider) =>
+            {
+                var dataDapperService = new DataDapperService(SqlConnection, DestinationConnection);
+                var categoryService = new CategoryService(dataDapperService);
+                return categoryService;
+            })
+            .AddSingleton<IProductService>((provider) =>
+            {
+                var dataDapperService = new DataDapperService(SqlConnection, DestinationConnection);
+                var productService = new ProductService(dataDapperService);
+                return productService;
 
+            }).BuildServiceProvider();
+
+        }
     }
 }

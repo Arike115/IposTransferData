@@ -1,14 +1,11 @@
-﻿using IposTransferData.DataAccess;
+﻿using Dapper;
+using IposTransferData.DataAccess;
 using IposTransferData.Dto;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using IposTransferData.Model;
-using Dapper;
 
-namespace IposTransferData.CategoryServices
+namespace IposTransferData.Services
 {
     public class CategoryService : ICategoryService
     {

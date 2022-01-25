@@ -1,10 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32002.261
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IposData", "IposData", "{B92BF6CE-0840-409C-AFEB-BAB027E81FFC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IposTransferData", "IposTransferData\IposTransferData.csproj", "{2B4C4C1D-E99D-442D-82D3-911E6D622E01}"
 EndProject
 Global
@@ -20,9 +18,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{2B4C4C1D-E99D-442D-82D3-911E6D622E01} = {B92BF6CE-0840-409C-AFEB-BAB027E81FFC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {40C8386D-5063-410F-B4B8-9CE8EDB7DB12}
