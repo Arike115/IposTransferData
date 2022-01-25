@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IposTransferData.ProductServices
+namespace IposTransferData.Services
 {
     public class ProductService : IProductService
     {
