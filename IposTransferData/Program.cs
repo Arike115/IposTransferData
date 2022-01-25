@@ -3,7 +3,6 @@ using IposTransferData.DataAccess;
 using System;
 using System.Data.SqlClient;
 using IposTransferData.Services;
-using IposTransferData.Services;
 using System.Threading.Tasks;
 using IposTransferData.Model;
 using System.Collections.Generic;
@@ -20,7 +19,7 @@ namespace IposTransferData
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false);
+                .AddJsonFile("appsettings.json", optional: true);
 
             Configuration = builder.Build();
 
@@ -111,14 +110,12 @@ namespace IposTransferData
             ServiceProvider = new ServiceCollection()
             .AddSingleton<ICategoryService>((provider) =>
             {
-                var dataDapperService = new DataDapperService(SqlConnection, DestinationConnection);
-                var categoryService = new CategoryService(dataDapperService);
+                var categoryService = new CategoryService(SqlConnection, DestinationConnection);
                 return categoryService;
             })
             .AddSingleton<IProductService>((provider) =>
             {
-                var dataDapperService = new DataDapperService(SqlConnection, DestinationConnection);
-                var productService = new ProductService(dataDapperService);
+                var productService = new ProductService(SqlConnection, DestinationConnection);
                 return productService;
 
             }).BuildServiceProvider();
