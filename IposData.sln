@@ -5,9 +5,7 @@ VisualStudioVersion = 16.0.32002.261
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IposData", "IposData", "{B92BF6CE-0840-409C-AFEB-BAB027E81FFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IposTransferData.core", "IposTransferData.core\IposTransferData.core.csproj", "{BB3A71B4-651D-49AB-8C93-45AE2AE4FC80}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IposTransferData", "IposTransferData\IposTransferData.csproj", "{2B4C4C1D-E99D-442D-82D3-911E6D622E01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IposTransferData", "IposTransferData\IposTransferData.csproj", "{2B4C4C1D-E99D-442D-82D3-911E6D622E01}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BB3A71B4-651D-49AB-8C93-45AE2AE4FC80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BB3A71B4-651D-49AB-8C93-45AE2AE4FC80}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BB3A71B4-651D-49AB-8C93-45AE2AE4FC80}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BB3A71B4-651D-49AB-8C93-45AE2AE4FC80}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2B4C4C1D-E99D-442D-82D3-911E6D622E01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2B4C4C1D-E99D-442D-82D3-911E6D622E01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B4C4C1D-E99D-442D-82D3-911E6D622E01}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -28,7 +22,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{BB3A71B4-651D-49AB-8C93-45AE2AE4FC80} = {B92BF6CE-0840-409C-AFEB-BAB027E81FFC}
 		{2B4C4C1D-E99D-442D-82D3-911E6D622E01} = {B92BF6CE-0840-409C-AFEB-BAB027E81FFC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

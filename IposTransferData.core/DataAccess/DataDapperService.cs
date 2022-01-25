@@ -12,26 +12,28 @@ namespace IposTransferData.Core.DataAccess
 {
     public class DataDapperService : IDataDapperService
     {
-        private readonly IConfiguration _config;
+        private readonly SqlConnection _connection;
 
-        public DataDapperService(IConfiguration config)
+        public DataDapperService(SqlConnection connection)
         {
-            _config = config;
+            _connection = connection;
         }
 
-        public async Task<IEnumerable<T>> GetData<T, U>(string sql, U paramaters, string connectionId = "OldConnection")
+        public async Task<IEnumerable<T>> GetData<T>(string sql, object paramaters)
         {
-            using IDbConnection connection = new SqlConnection(_config.GetConnectionString(connectionId));
+            if (_connection.State != ConnectionState.Open)
+                _connection.Open();
 
-            return await connection.QueryAsync<T>(sql, paramaters, commandType: CommandType.Text);
+            return await _connection.QueryAsync<T>(sql, paramaters, commandType: CommandType.Text);
 
         }
 
-        public async Task SaveData<T>(string sql, T paramaters, string connectionId = "Default")
+        public async Task SaveData(string sql, object paramaters)
         {
-            using IDbConnection connection = new SqlConnection(_config.GetConnectionString(connectionId));
+            if (_connection.State != ConnectionState.Open)
+                _connection.Open();
 
-            await connection.ExecuteAsync(sql, paramaters, commandType: CommandType.Text);
+            await _connection.ExecuteAsync(sql, paramaters, commandType: CommandType.Text);
 
         }
     }
