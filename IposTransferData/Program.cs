@@ -1,5 +1,4 @@
 ﻿
-using IposTransferData.DataAccess;
 using System;
 using System.Data.SqlClient;
 using IposTransferData.Services;

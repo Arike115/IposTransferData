@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using IposTransferData.DataAccess;
 using IposTransferData.Dto;
 using IposTransferData.Model;
 using System;
