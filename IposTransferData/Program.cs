@@ -100,7 +100,18 @@ namespace IposTransferData
                 filteredcat.Add((Category)cat);
                 var total = filteredcat.ToList();
                 Console.WriteLine("Item Number:{0}", total.Count);
+                
             }
+            var categoryitem = await categoryService.GetCategoryItem();
+            var filteredcatitem = new List<CategoryItem>();
+            foreach (var catitem in categoryitem)
+            {
+                await categoryService.InsertCategoryItem(catitem.Item_Id, catitem.Category_Id);
+                filteredcatitem.Add((CategoryItem)catitem);
+                var totalLIST = filteredcatitem.ToList();
+                Console.WriteLine("Item Number:{0}", totalLIST.Count);
+            }
+
         }
 
         private static void GetServiceProvider()

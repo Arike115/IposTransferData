@@ -18,7 +18,7 @@ namespace IposTransferData.Services
         private readonly SqlConnection _sqlConnection;
         private readonly SqlConnection _destinationConnection;
         string connectionString = "Server=DESKTOP-M3U3Q02\\S_SQLEXPRESS;Database=Iposv3;Trusted_Connection=true;MultipleActiveResultSets=false;TrustServerCertificate=True";
-        string desString = "Server=DESKTOP-M3U3Q02\\S_SQLEXPRESS;Database=IposDataRetrieved;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=True";
+        string desString = "Server=DESKTOP-M3U3Q02\\S_SQLEXPRESS;Database=Ipos_Transfer;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=True";
         public ProductService(SqlConnection sqlConnection, SqlConnection destinationConnection)
         {
             _sqlConnection = new SqlConnection(connectionString);
