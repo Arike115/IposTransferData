@@ -1,8 +1,6 @@
 ﻿
-using IposTransferData.DataAccess;
 using System;
 using System.Data.SqlClient;
-using IposTransferData.Services;
 using IposTransferData.Services;
 using System.Threading.Tasks;
 using IposTransferData.Model;
@@ -20,7 +18,7 @@ namespace IposTransferData
         {
             var builder = new ConfigurationBuilder()                                                                                                                                                                    
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false);
+                .AddJsonFile("appsettings.json", optional: true);
 
             Configuration = builder.Build();
 
@@ -102,7 +100,18 @@ namespace IposTransferData
                 filteredcat.Add((Category)cat);
                 var total = filteredcat.ToList();
                 Console.WriteLine("Item Number:{0}", total.Count);
+                
             }
+            var categoryitem = await categoryService.GetCategoryItem();
+            var filteredcatitem = new List<CategoryItem>();
+            foreach (var catitem in categoryitem)
+            {
+                await categoryService.InsertCategoryItem(catitem.Item_Id, catitem.Category_Id);
+                filteredcatitem.Add((CategoryItem)catitem);
+                var totalLIST = filteredcatitem.ToList();
+                Console.WriteLine("Item Number:{0}", totalLIST.Count);
+            }
+
         }
 
         private static void GetServiceProvider()
@@ -111,14 +120,12 @@ namespace IposTransferData
             ServiceProvider = new ServiceCollection()
             .AddSingleton<ICategoryService>((provider) =>
             {
-                var dataDapperService = new DataDapperService(SqlConnection, DestinationConnection);
-                var categoryService = new CategoryService(dataDapperService);
+                var categoryService = new CategoryService(SqlConnection, DestinationConnection);
                 return categoryService;
             })
             .AddSingleton<IProductService>((provider) =>
             {
-                var dataDapperService = new DataDapperService(SqlConnection, DestinationConnection);
-                var productService = new ProductService(dataDapperService);
+                var productService = new ProductService(SqlConnection, DestinationConnection);
                 return productService;
 
             }).BuildServiceProvider();

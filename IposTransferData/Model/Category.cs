@@ -34,4 +34,12 @@ namespace IposTransferData.Model
             return destination;
         }
     }
+
+    public class CategoryItem
+    {
+       
+        public Guid Item_Id { get; set; }
+        public Guid Category_Id { get; set; }
+        
+    }  
 }
