@@ -32,7 +32,6 @@ namespace IposTransferData.Services
            
             var category = await _sqlConnection.QueryAsync<CategoryDto>(sql, null);
             return category;
-
         }
 
         public async Task<IEnumerable<CategoryItemDto>> GetCategoryItem()
@@ -44,11 +43,8 @@ namespace IposTransferData.Services
 	                   INNER JOIN Category c ON c.CategoryUId = i.Category_UId
 	                    WHERE i.IsDeleted <> 1";
 
-            
-
             var categoryItem = await _sqlConnection.QueryAsync<CategoryItemDto>(sql, null);
            return categoryItem;
-
         }
 
         public async Task InsertCategoryItem(Guid? Item_Id,Guid? Category_Id )
@@ -59,15 +55,10 @@ namespace IposTransferData.Services
             var parameter = new DynamicParameters();
             parameter.Add("@Item_Id", Item_Id);
             parameter.Add("@Category_Id", Category_Id);
-            
-
 
             var sql = @"INSERT into CategoryItem(Item_Id, Category_Id) 
                                       Values(@Item_Id, @Category_Id)";
-
-            await _destinationConnection.ExecuteAsync(sql, parameter);
-
-
+                await _destinationConnection.ExecuteAsync(sql, parameter);
         }
 
 
@@ -85,14 +76,10 @@ namespace IposTransferData.Services
             parameter.Add("@ModifiedOn", cat.ModifiedOn);
             parameter.Add("@CreatedOn", cat.CreatedOn);
             parameter.Add("@LogoFileSize", cat.LogoFileSize ?? 0);
-
             
             var sql = @"INSERT into Category(Id, Title, Description, ParentCategory_Id,IsDeleted, ModifiedOn, CreatedOn,LogoFileSize) 
                                       Values(@Id, @Title, @Description, @ParentCategory_Id, @IsDeleted, @ModifiedOn, @CreatedOn, @LogoFileSize)";
-
             await _destinationConnection.ExecuteAsync(sql, parameter);
-            
-           
         }
 
       

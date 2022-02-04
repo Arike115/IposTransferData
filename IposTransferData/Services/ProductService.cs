@@ -44,19 +44,14 @@ namespace IposTransferData.Services
                         ORDER BY p.ModifiedOnUtc DESC";
             
             var product = await _sqlConnection.QueryAsync<ProductDto>(sql, null);
-
             return product;
-
         }
 
         
         public async Task InsertProductData(Item Prod)
-                           long LogoFileSize, bool IsDiscountable, bool IsDiscontinue, decimal ReorderLevel,DateTime? ModifiedOn, DateTime? CreatedOn, bool IsDeleted, float? Weight, int? ItemsType,
-                           decimal PreviousSellingCost, decimal? ExtraCharge, decimal? DiscountLimit)
         {
             if (_destinationConnection.State != ConnectionState.Open)
                 _destinationConnection.Open();
-
            
             var parameter = new DynamicParameters();
             parameter.Add("@Id", Prod.Id);
@@ -85,7 +80,6 @@ namespace IposTransferData.Services
                             LogoFileSize,IsDiscountable,IsDiscontinue,ReorderLevel,ModifiedOn,CreatedOn,IsDeleted,Weight,ItemsType,PreviousSellingCost,ExtraCharge,DiscountLimit) 
                         VALUES (@Id, @Barcode, @Quantity, @title, @Description, @SellingCost, @ActualCost,@LogoUrl,@LogoOriginalFileName,@LogoFileSize,
                         @IsDiscountable,@IsDiscontinue,@ReorderLevel,@ModifiedOn,@CreatedOn,@IsDeleted,@Weight,@ItemsType,@PreviousSellingCost,@ExtraCharge,@DiscountLimit)";
-
 
             await _destinationConnection.ExecuteAsync(sql, parameter);
            

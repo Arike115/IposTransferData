@@ -44,13 +44,11 @@ namespace IposTransferData.Model
         public Guid? Item_Id { get; set; }
         public Guid? Category_Id { get; set; }
 
-
         public static explicit operator CategoryItem(CategoryItemDto v)
         {
             var destination = new CategoryItem();
             //destination.Category_Id = new Guid();
             destination.Item_Id = v.ProductUId;
-
             return destination;
         }
 
