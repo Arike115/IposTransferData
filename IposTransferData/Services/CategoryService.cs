@@ -15,7 +15,6 @@ namespace IposTransferData.Services
     {
         private readonly SqlConnection _sqlConnection;
         private readonly SqlConnection _destinationConnection;
-        public static IConfiguration Configuration { get; private set; }
         public CategoryService(SqlConnection sqlConnection, SqlConnection destinationConnection)
         {
             _sqlConnection = sqlConnection;

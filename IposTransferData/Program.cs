@@ -17,7 +17,7 @@ namespace IposTransferData
     {
         static Program()
         {
-            var builder = new ConfigurationBuilder()
+            var builder = new ConfigurationBuilder()                                                                                                                                                                    
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: true);
 
