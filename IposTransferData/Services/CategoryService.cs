@@ -1,8 +1,10 @@
 ﻿using Dapper;
 using IposTransferData.Dto;
 using IposTransferData.Model;
-using System;
+using Microsoft.Extensions.Configuration;
+using System;   
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
@@ -13,12 +15,11 @@ namespace IposTransferData.Services
     {
         private readonly SqlConnection _sqlConnection;
         private readonly SqlConnection _destinationConnection;
-        string connectionString = "Server=DESKTOP-M3U3Q02\\S_SQLEXPRESS;Database=Iposv3;Trusted_Connection=true;MultipleActiveResultSets=false;TrustServerCertificate=True";
-        string desString = "Server=DESKTOP-M3U3Q02\\S_SQLEXPRESS;Database=Ipos_Transfer;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=True";
+        public static IConfiguration Configuration { get; private set; }
         public CategoryService(SqlConnection sqlConnection, SqlConnection destinationConnection)
         {
-            _sqlConnection = new SqlConnection(connectionString);
-            _destinationConnection = new SqlConnection(desString);
+            _sqlConnection = sqlConnection;
+            _destinationConnection = destinationConnection;
         }
 
         public async Task<IEnumerable<CategoryDto>> GetCategory()
@@ -35,21 +36,23 @@ namespace IposTransferData.Services
 
         }
 
-        public async Task<IEnumerable<CategoryItem>> GetCategoryItem()
+        public async Task<IEnumerable<CategoryItemDto>> GetCategoryItem()
         {
-            if (_destinationConnection.State != ConnectionState.Open)
-                _destinationConnection.Open();
+            if (_sqlConnection.State != ConnectionState.Open)
+                _sqlConnection.Open();
 
-            var sql = @"SELECT i.Id Item_Id, c.Id Category_Id From Item i
-	                    JOIN Category c ON c.Id = c.Id
+            var sql = @"SELECT i.ProductUId, c.CategoryUId From Product i
+	                   INNER JOIN Category c ON c.CategoryUId = i.Category_UId
 	                    WHERE i.IsDeleted <> 1";
 
-            var categoryItem = await _destinationConnection.QueryAsync<CategoryItem>(sql, null);
-            return categoryItem;
+            
+
+            var categoryItem = await _sqlConnection.QueryAsync<CategoryItemDto>(sql, null);
+           return categoryItem;
 
         }
 
-        public async Task InsertCategoryItem(Guid Item_Id,Guid Category_Id )
+        public async Task InsertCategoryItem(Guid? Item_Id,Guid? Category_Id )
         {
             if (_destinationConnection.State != ConnectionState.Open)
                 _destinationConnection.Open();
@@ -69,20 +72,20 @@ namespace IposTransferData.Services
         }
 
 
-        public async Task InsertCategoryData(Guid Id,string Title, string Description,  Guid? ParentCategory_Id, bool IsDeleted, DateTime? ModifiedOn, DateTime? CreatedOn, long? LogoFileSize)
+        public async Task InsertCategoryData(Category cat)
         {
             if (_destinationConnection.State != ConnectionState.Open)
                 _destinationConnection.Open();
 
             var parameter = new DynamicParameters();
-            parameter.Add("@Id", Id);
-            parameter.Add("@Title", Title);
-            parameter.Add("@Description", Description);
-            parameter.Add("@ParentCategory_Id", ParentCategory_Id ?? null);
-            parameter.Add("@IsDeleted", IsDeleted);
-            parameter.Add("@ModifiedOn", ModifiedOn);
-            parameter.Add("@CreatedOn", CreatedOn);
-            parameter.Add("@LogoFileSize", LogoFileSize ?? 0);
+            parameter.Add("@Id", cat.Id);
+            parameter.Add("@Title", cat.Title);
+            parameter.Add("@Description", cat.Description);
+            parameter.Add("@ParentCategory_Id", cat.ParentCategory_Id ?? null);
+            parameter.Add("@IsDeleted", cat.IsDeleted);
+            parameter.Add("@ModifiedOn", cat.ModifiedOn);
+            parameter.Add("@CreatedOn", cat.CreatedOn);
+            parameter.Add("@LogoFileSize", cat.LogoFileSize ?? 0);
 
             
             var sql = @"INSERT into Category(Id, Title, Description, ParentCategory_Id,IsDeleted, ModifiedOn, CreatedOn,LogoFileSize) 

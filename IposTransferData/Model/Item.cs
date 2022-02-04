@@ -22,14 +22,14 @@ namespace IposTransferData.Model
         public decimal ActualCost { get; set; }
         public bool IsDiscountable { get; set; }
         public bool IsDiscontinue { get; set; }
-        public decimal DiscountLimit { get; set; }
+        public decimal? DiscountLimit { get; set; }
         public string ItemCode { get; set; }
         public string LogoUrl { get; set; }
         public string LogoName { get; set; }
         public string LogoContentType { get; set; }
         public long LogoFileSize { get; set; }
         public string LogoOriginalFileName { get; set; }
-        public decimal ExtraCharge { get; set; }
+        public decimal? ExtraCharge { get; set; }
         public string Logo { get; set; }
         public string ManufacturingDate { get; set; }
         public DateTime? CreatedOn { get; set; }
@@ -40,7 +40,7 @@ namespace IposTransferData.Model
         public static explicit operator Item(ProductDto source)
         {
             var destination = new Item();
-            destination.Id = new Guid();
+            destination.Id = source.ProductUId;
             destination.Barcode = source.Barcode;
             destination.Quantity = source.Quantity;
             destination.Title = source.Name;
