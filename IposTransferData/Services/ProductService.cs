@@ -17,12 +17,10 @@ namespace IposTransferData.Services
     {
         private readonly SqlConnection _sqlConnection;
         private readonly SqlConnection _destinationConnection;
-        string connectionString = "Server=DESKTOP-M3U3Q02\\S_SQLEXPRESS;Database=Iposv3;Trusted_Connection=true;MultipleActiveResultSets=false;TrustServerCertificate=True";
-        string desString = "Server=DESKTOP-M3U3Q02\\S_SQLEXPRESS;Database=Ipos_Transfer;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=True";
         public ProductService(SqlConnection sqlConnection, SqlConnection destinationConnection)
         {
-            _sqlConnection = new SqlConnection(connectionString);
-            _destinationConnection = new SqlConnection(desString); 
+            _sqlConnection = sqlConnection;
+            _destinationConnection = destinationConnection; 
         }
 
         public async Task<IEnumerable<ProductDto>> GetProductsByCategoryId(int category_UId)
@@ -49,8 +47,6 @@ namespace IposTransferData.Services
             return product;
 
         }
-
-
         
         public async Task InsertProductData( Guid Id,string Barcode, double Quantity, string Title, string Description, decimal SellingCost, decimal ActualCost,string LogoUrl, string LogoOriginalFileName,
                            long LogoFileSize, bool IsDiscountable, bool IsDiscontinue, decimal ReorderLevel,DateTime? ModifiedOn, DateTime? CreatedOn, bool IsDeleted, float? Weight, int? ItemsType,
