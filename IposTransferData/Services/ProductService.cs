@@ -30,8 +30,8 @@ namespace IposTransferData.Services
 
             var sql = @"select * From Product po
                         WHERE po.Category_UId = @category_UId";
-            var Product =  await _sqlConnection.QueryAsync<ProductDto>(sql, new { Category_UId = category_UId });
-            return Product;
+            var Products =  await _sqlConnection.QueryAsync<ProductDto>(sql, new { Category_UId = category_UId });
+            return Products;
 
         }
 
@@ -44,11 +44,13 @@ namespace IposTransferData.Services
                         ORDER BY p.ModifiedOnUtc DESC";
             
             var product = await _sqlConnection.QueryAsync<ProductDto>(sql, null);
+
             return product;
 
         }
+
         
-        public async Task InsertProductData( Guid Id,string Barcode, double Quantity, string Title, string Description, decimal SellingCost, decimal ActualCost,string LogoUrl, string LogoOriginalFileName,
+        public async Task InsertProductData(Item Prod)
                            long LogoFileSize, bool IsDiscountable, bool IsDiscontinue, decimal ReorderLevel,DateTime? ModifiedOn, DateTime? CreatedOn, bool IsDeleted, float? Weight, int? ItemsType,
                            decimal PreviousSellingCost, decimal? ExtraCharge, decimal? DiscountLimit)
         {
@@ -57,27 +59,27 @@ namespace IposTransferData.Services
 
            
             var parameter = new DynamicParameters();
-            parameter.Add("@Id", Id);
-            parameter.Add("@Barcode", Barcode);
-            parameter.Add("@Quantity", Quantity);
-            parameter.Add("@Title", Title);
-            parameter.Add("@Description", Description);
-            parameter.Add("@SellingCost", SellingCost);
-            parameter.Add("@ActualCost", ActualCost);
-            parameter.Add("@LogoUrl", LogoUrl);
-            parameter.Add("@LogoOriginalFileName", LogoOriginalFileName);
-            parameter.Add("@LogoFileSize", LogoFileSize);
-            parameter.Add("@IsDiscountable", IsDiscountable);
-            parameter.Add("@IsDiscontinue", IsDiscontinue);
-            parameter.Add("@ReorderLevel", ReorderLevel);
-            parameter.Add("@IsDeleted", IsDeleted);
-            parameter.Add("@ModifiedOn", ModifiedOn);
-            parameter.Add("@CreatedOn", CreatedOn);
-            parameter.Add("@Weight", Weight ?? 0);
-            parameter.Add("@ItemsType", ItemsType ?? 0);
-            parameter.Add("@PreviousSellingCost", PreviousSellingCost);
-            parameter.Add("@ExtraCharge", ExtraCharge ?? 0);
-            parameter.Add("@DiscountLimit", DiscountLimit ?? 0);
+            parameter.Add("@Id", Prod.Id);
+            parameter.Add("@Barcode", Prod.Barcode);
+            parameter.Add("@Quantity", Prod.Quantity);
+            parameter.Add("@Title", Prod.Title);
+            parameter.Add("@Description", Prod.Description);
+            parameter.Add("@SellingCost", Prod.SellingCost);
+            parameter.Add("@ActualCost", Prod.ActualCost);
+            parameter.Add("@LogoUrl", Prod.LogoUrl);
+            parameter.Add("@LogoOriginalFileName", Prod.LogoOriginalFileName);
+            parameter.Add("@LogoFileSize", Prod.LogoFileSize);
+            parameter.Add("@IsDiscountable", Prod.IsDiscountable);
+            parameter.Add("@IsDiscontinue", Prod.IsDiscontinue);
+            parameter.Add("@ReorderLevel", Prod.ReorderLevel);
+            parameter.Add("@IsDeleted", Prod.IsDeleted);
+            parameter.Add("@ModifiedOn", Prod.ModifiedOn);
+            parameter.Add("@CreatedOn", Prod.CreatedOn);
+            parameter.Add("@Weight", Prod.Weight ?? 0);
+            parameter.Add("@ItemsType", Prod.ItemsType ?? 0);
+            parameter.Add("@PreviousSellingCost", Prod.PreviousSellingCost);
+            parameter.Add("@ExtraCharge", Prod.ExtraCharge ?? 0);
+            parameter.Add("@DiscountLimit", Prod.DiscountLimit ?? 0);
 
             var sql = @"INSERT into Item(Id,Barcode,Quantity,Title,Description,SellingCost,ActualCost,LogoUrl,LogoOriginalFileName,
                             LogoFileSize,IsDiscountable,IsDiscontinue,ReorderLevel,ModifiedOn,CreatedOn,IsDeleted,Weight,ItemsType,PreviousSellingCost,ExtraCharge,DiscountLimit) 
@@ -87,16 +89,6 @@ namespace IposTransferData.Services
 
             await _destinationConnection.ExecuteAsync(sql, parameter);
            
-            //return item;
-            //using (var result = _db.SaveData(sql, product))
-            //{
-            //    var items = result.Read<Item>().SingleOrDefault();
-            //    return items;
-            //    if (items != null)
-            //    {
-            //        items.AddRange(items);
-            //    }
-            //}
         }
     }
 }

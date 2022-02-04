@@ -9,8 +9,8 @@ namespace IposTransferData.Services
     public interface ICategoryService
     {
         Task<IEnumerable<CategoryDto>> GetCategory();
-        Task InsertCategoryData(Guid Id, string Title, string Description,  Guid? ParentCategoryId, bool IsDeleted,DateTime? ModifiedOn, DateTime? CreatedOn, long? LogoFileSize);
-        Task<IEnumerable<CategoryItem>> GetCategoryItem();
-        Task InsertCategoryItem(Guid item_Id, Guid category_Id);
+        Task InsertCategoryData(Category cat);
+        Task<IEnumerable<CategoryItemDto>> GetCategoryItem();
+        Task InsertCategoryItem(Guid? item_Id, Guid? category_Id);
     }
 }
