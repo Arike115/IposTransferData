@@ -15,7 +15,15 @@ namespace IposTransferData.Dto
         public bool IsDeleted { get; set; }
         public Guid? ParentCatId { get; set; }
         public string ParentCatName { get; set; }
-        public DateTime? CreatedOn { get; set; } 
+        public DateTime? CreatedOn { get; set; }
 
     }
+
+
+    public class CategoryItemDto 
+    {
+        public int CategoryUId { get; set; }
+        public Guid ProductUId { get; set; }
+    }
+
 }

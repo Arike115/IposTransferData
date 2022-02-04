@@ -9,6 +9,7 @@ using System.Linq;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Threading;
 
 namespace IposTransferData
 {
@@ -20,8 +21,10 @@ namespace IposTransferData
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: true);
 
+
             Configuration = builder.Build();
 
+           
             SqlConnection = new SqlConnection(Configuration.GetConnectionString("Source"));
             DestinationConnection = new SqlConnection(Configuration.GetConnectionString("Destination"));
         }
@@ -35,85 +38,117 @@ namespace IposTransferData
         {
             GetServiceProvider();
 
-            await ProcessProducts();
-            await ProcessCategory();
+            Console.WriteLine("About to process data");
+
+            await ProcessData();
+
+            Thread.Sleep(3000);
+            Console.WriteLine("Done with the processing of data");
+            
         }
 
-        public async static Task ProcessProducts()
-        {
-            var productService = ServiceProvider.GetService<IProductService>();
-            var items = await productService.GetProducts();
-            Console.WriteLine(items);
-            //var product = items;
-            var filtereditem = new List<Item>();
 
-            foreach (var product in items)
-            {
-                await productService.InsertProductData(
-                   Guid.NewGuid(),
-                    product.Barcode,
-                    product.Quantity,
-                    product.Name,
-                    product.Description,
-                    product.Price,
-                    product.CostPrice,
-                    product.PhotoUrl,
-                    product.FileName,
-                    product.FileSize,
-                    product.IsDiscountinued,
-                    product.IsDiscountable,
-                    product.ReorderLevel,
-                    product.ModifiedOn ?? DateTime.Now,
-                    product.CreatedOn = product.ModifiedOn ?? DateTime.Now,
-                    product.IsDeleted,
-                    null,
-                    null,
-                    product.Price,
-                    null,
-                    null);
-                Console.WriteLine("Name:{0}", product.Name);
-                filtereditem.Add((Item)product);
-                var total = filtereditem.ToList();
-                Console.WriteLine("Item Number:{0}", total.Count);
-            }
-        }
-
-        public async static Task ProcessCategory()
+        public async static Task ProcessData()
         {
             var categoryService = ServiceProvider.GetService<ICategoryService>();
-            var category = await categoryService.GetCategory();
-            Console.WriteLine(category);
+            var productService = ServiceProvider.GetService<IProductService>();
 
-            var filteredcat = new List<Category>();
-            foreach (var cat in category)
+          
+            Console.WriteLine("About to process the categories");
+            Thread.Sleep(3000);
+            Console.WriteLine();
+
+            var categories = await categoryService.GetCategory();
+
+            Console.WriteLine("The total number of categories is => " + categories.Count());
+
+            Console.WriteLine();
+            Console.WriteLine("Currently looping through the categories");
+
+            foreach (var cat in categories)
             {
-                await categoryService.InsertCategoryData(
-                  Guid.NewGuid(),
-                  cat.Name,
-                  cat.Description,
-                  null,
-                  cat.IsDeleted,
-                  cat.ModifiedOn ?? DateTime.Now,
-                  cat.CreatedOn = cat.ModifiedOn ?? DateTime.Now,
-                  null);
-                Console.WriteLine("Name:{0}", cat.Name);
-                filteredcat.Add((Category)cat);
-                var total = filteredcat.ToList();
-                Console.WriteLine("Item Number:{0}", total.Count);
+                Console.WriteLine("Currently processing the category whose name is ==>  " + cat.Name);
+                Thread.Sleep(5000);
+
+                var category = new Category()
+                {
+                    Id = Guid.NewGuid(),
+                    Title = cat.Name,
+                    Description = cat.Description,
+                    IsDeleted = cat.IsDeleted,
+                    ParentCategory_Id = null,
+                    LogoFileSize = null,
+                    ModifiedOn = cat.ModifiedOn ?? DateTime.Now,
+                    CreatedOn = cat.CreatedOn ?? DateTime.Now,
+                };
+
+                Console.WriteLine("About saving the category whose name is ==> " + cat.Name);
+
+                await categoryService.InsertCategoryData(category);
+
+                Console.WriteLine("Successfully saved the category whose name is ==> " + cat.Name);
+
+                Console.WriteLine("About fetching the list of products under the category whose name is ==> " + cat.Name);
                 
-            }
-            var categoryitem = await categoryService.GetCategoryItem();
-            var filteredcatitem = new List<CategoryItem>();
-            foreach (var catitem in categoryitem)
-            {
-                await categoryService.InsertCategoryItem(catitem.Item_Id, catitem.Category_Id);
-                filteredcatitem.Add((CategoryItem)catitem);
-                var totalLIST = filteredcatitem.ToList();
-                Console.WriteLine("Item Number:{0}", totalLIST.Count);
-            }
+                var products = await productService.GetProductsByCategoryId(cat.CategoryUId);
 
+                Console.WriteLine("The total number of products under the category {0} is {1}", cat.Name, products.Count());
+
+                Console.WriteLine("Currently looping through the products under the category whose name is " + cat.Name);
+
+                foreach (var product in products)
+                {
+                    Console.WriteLine("Currently processing the product whose name is ==>  " + product.Name);
+
+                    Console.WriteLine("About saving the product whose name is ==> " + product.Name);
+
+                    var prod = new Item()
+                    {
+                        Id = product.ProductUId,
+                        Barcode = product.Barcode,
+                        Quantity = product.Quantity,
+                        Title = product.Name,
+                        Description = product.Description,
+                        SellingCost = product.Price,
+                        ActualCost = product.CostPrice,
+                        LogoUrl = product.PhotoUrl,
+                        LogoOriginalFileName = product.FileName,
+                        LogoFileSize = product.FileSize,
+                        IsDiscontinue = product.IsDiscountinued,
+                        IsDiscountable = product.IsDiscountable,
+                        ReorderLevel = product.ReorderLevel,
+                        ModifiedOn = product.ModifiedOn ?? DateTime.Now,
+                        CreatedOn = product.CreatedOn = product.ModifiedOn ?? DateTime.Now,
+                        IsDeleted = product.IsDeleted,
+                        Weight = null,
+                        ItemsType = null,
+                        PreviousSellingCost = product.Price,
+                        ExtraCharge = null,
+                        DiscountLimit = null,
+
+
+
+                    }; 
+
+
+                    await productService.InsertProductData(prod);
+
+
+                    Console.WriteLine("Successfully saved the product whose name is " + product.Name);
+
+                    Console.WriteLine();
+                    Console.WriteLine();
+
+                    Console.WriteLine("About saving the product guid and category guid for product whose guid is {0} and category guid is {1} into the category Item table", product.ProductUId, category.Id);
+
+                    await categoryService.InsertCategoryItem(product.ProductUId, category.Id);
+
+                    Console.WriteLine("Successfully saved the product guid and category guid for product whose guid is {0} and category guid is {1} into the category Item table", product.ProductUId, category.Id);
+                }
+            }
         }
 
+        
         private static void GetServiceProvider()
         {
             //setup our DI
@@ -125,7 +160,7 @@ namespace IposTransferData
             })
             .AddSingleton<IProductService>((provider) =>
             {
-                var productService = new ProductService(SqlConnection, DestinationConnection);
+                var productService = new ProductService(SqlConnection, DestinationConnection, Configuration);
                 return productService;
 
             }).BuildServiceProvider();
