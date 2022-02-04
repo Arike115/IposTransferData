@@ -17,13 +17,10 @@ namespace IposTransferData.Services
     {
         private readonly SqlConnection _sqlConnection;
         private readonly SqlConnection _destinationConnection;
-        private readonly IConfiguration _IConfiguration;
-        public ProductService(SqlConnection sqlConnection, SqlConnection destinationConnection, IConfiguration IConfiguration)
+        public ProductService(SqlConnection sqlConnection, SqlConnection destinationConnection)
         {
-            _IConfiguration = IConfiguration;
-            _sqlConnection = new SqlConnection(_IConfiguration.GetConnectionString("Source"));
-            _destinationConnection = new SqlConnection(_IConfiguration.GetConnectionString("Destination"));
-           
+            _sqlConnection = sqlConnection;
+            _destinationConnection = destinationConnection; 
         }
 
         public async Task<IEnumerable<ProductDto>> GetProductsByCategoryId(int category_UId)
@@ -54,6 +51,8 @@ namespace IposTransferData.Services
 
         
         public async Task InsertProductData(Item Prod)
+                           long LogoFileSize, bool IsDiscountable, bool IsDiscontinue, decimal ReorderLevel,DateTime? ModifiedOn, DateTime? CreatedOn, bool IsDeleted, float? Weight, int? ItemsType,
+                           decimal PreviousSellingCost, decimal? ExtraCharge, decimal? DiscountLimit)
         {
             if (_destinationConnection.State != ConnectionState.Open)
                 _destinationConnection.Open();
