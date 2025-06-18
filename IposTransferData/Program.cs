@@ -10,6 +10,7 @@ using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading;
+using IposTransferData.Enum;
 
 namespace IposTransferData
 {
@@ -46,85 +47,88 @@ namespace IposTransferData
         {
             var categoryService = ServiceProvider.GetService<ICategoryService>();
             var productService = ServiceProvider.GetService<IProductService>();
+            var saleService = ServiceProvider.GetService<IsaleService>();
+
 
             Console.WriteLine("About to process the categories");
             Console.WriteLine();
 
-            var categories = await categoryService.GetCategory();
+            var sale = await saleService.GetSale();
 
-            Console.WriteLine("The total number of categories is => " + categories.Count());
+            Console.WriteLine("The total number of categories is => " + sale.Count());
             Console.WriteLine();
             Console.WriteLine("Currently looping through the categories");
 
-            foreach (var cat in categories)
+            foreach (var data in sale)
             {
-                Console.WriteLine("Currently processing the category whose name is ==>  " + cat.Name);
+                Console.WriteLine("Currently processing the category whose name is ==>  " + data.PaymentType);
 
-                var category = new Category()
+                var saledata = new Sale()
                 {
                     Id = Guid.NewGuid(),
-                    Title = cat.Name,
-                    Description = cat.Description,
-                    IsDeleted = cat.IsDeleted,
-                    ParentCategory_Id = null,
-                    LogoFileSize = null,
-                    ModifiedOn = cat.ModifiedOn ?? DateTime.Now,
-                    CreatedOn = cat.CreatedOn ?? DateTime.Now,
+                    RefNo = data.RefNo,
+                    NetPrice = data.NetCost,
+                    Cost = data.Cost,
+                    NetCost = data.NetPrice,
+                    Discount = data.Discount,
+                    NetItemDiscount = data.NetItemDiscount,
+                    Tax = data.Tax,
+                    SumQuantity = data.SumQuantity,
+                    ExtraCharges = data.ExtraCharges,
+                    Status = data.Status,
+                    CustomerDetail = null,
+                    Customer_Id = null,
+                    PaymentCategory = PaymentCategory.SINGLEPAYEMENT,
+                    Business_Id = data.Business_Id,
+                    Store_Id = data.Store_Id,
+                    StoreDetail = data.StoreDetail,
+                    Remarks = data.Remarks,
+                    TransactionDate = data.TransactionDate,
+                    ValueDate = data.ValueDate,
+                    DueDate = data.DueDate,
+                    AmountTender = data.AmountTender,
+                    CurrencyCode = data.CurrencyCode,
+                    IsDeleted = data.IsDeleted,
+                    CreatedBy = data.CreatedBy,
+                    ModifiedBy = data.ModifiedBy,
+                    ModifiedOn = data.ModifiedOn ?? DateTime.Now,
+                    CreatedOn = data.CreatedOn ?? DateTime.Now,
                 };
 
-                Console.WriteLine("About saving the category whose name is ==> " + cat.Name);
+                Console.WriteLine("About saving the category whose name is ==> " + data.AmountTender);
 
-                await categoryService.InsertCategoryData(category);
+                await saleService.InsertSaleData(saledata);
 
-                Console.WriteLine("Successfully saved the category whose name is ==> " + cat.Name);
-                Console.WriteLine("About fetching the list of products under the category whose name is ==> " + cat.Name);
+                Console.WriteLine("Successfully saved the category whose name is ==> " + data.AmountTender);
+                Console.WriteLine("About fetching the list of products under the category whose name is ==> " + data.AmountTender);
                 
-                var products = await productService.GetProductsByCategoryId(cat.CategoryUId);
+                var products = await saleService.GetSaleById(data.Id.ToString());
 
-                Console.WriteLine("The total number of products under the category {0} is {1}", cat.Name, products.Count());
-                Console.WriteLine("Currently looping through the products under the category whose name is " + cat.Name);
+               
+                    Console.WriteLine("Currently processing the product whose name is ==>  " + data.PaymentType);
+                    Console.WriteLine("About saving the product whose name is ==> " + data.PaymentType);
 
-                foreach (var product in products)
-                {
-                    Console.WriteLine("Currently processing the product whose name is ==>  " + product.Name);
-                    Console.WriteLine("About saving the product whose name is ==> " + product.Name);
-
-                    var prod = new Item()
+                    var prod = new Payment()
                     {
-                        Id = product.ProductUId,
-                        Barcode = product.Barcode,
-                        Quantity = product.Quantity,
-                        Title = product.Name,
-                        Description = product.Description,
-                        SellingCost = product.Price,
-                        ActualCost = product.CostPrice,
-                        LogoUrl = product.PhotoUrl,
-                        LogoOriginalFileName = product.FileName,
-                        LogoFileSize = product.FileSize,
-                        IsDiscontinue = product.IsDiscountinued,
-                        IsDiscountable = product.IsDiscountable,
-                        ReorderLevel = product.ReorderLevel,
-                        ModifiedOn = product.ModifiedOn ?? DateTime.Now,
-                        CreatedOn = product.CreatedOn = product.ModifiedOn ?? DateTime.Now,
-                        IsDeleted = product.IsDeleted,
-                        Weight = null,
-                        ItemsType = null,
-                        PreviousSellingCost = product.Price,
-                        ExtraCharge = null,
-                        DiscountLimit = null,
+                        Id = Guid.NewGuid(),
+                        Sale_Id = saledata.Id,
+                        PaymentType = data.PaymentType,
+                        PaymentAmount = (double)data.NetCost,
+                        PaymentCategory = PaymentCategory.SINGLEPAYEMENT,
+                        IsDeleted = data.IsDeleted,
+                        CreatedBy = data.CreatedBy,
+                        ModifiedBy = data.ModifiedBy,
+                        ModifiedOn = data.ModifiedOn, 
+                        CreatedOn = data.CreatedOn,
                     }; 
 
-                    await productService.InsertProductData(prod);
+                    await saleService.InsertPaymentDate(prod);
 
-                    Console.WriteLine("Successfully saved the product whose name is " + product.Name);
+                    Console.WriteLine("Successfully saved the product whose name is " + data.AmountTender);
                     Console.WriteLine();
                     Console.WriteLine();
-                    Console.WriteLine("About saving the product guid and category guid for product whose guid is {0} and category guid is {1} into the category Item table", product.ProductUId, category.Id);
-
-                    await categoryService.InsertCategoryItem(product.ProductUId, category.Id);
-
-                    Console.WriteLine("Successfully saved the product guid and category guid for product whose guid is {0} and category guid is {1} into the category Item table", product.ProductUId, category.Id);
-                }
+                    Console.WriteLine("Successfully saved the product");
+                
             }
         }
 
@@ -138,6 +142,11 @@ namespace IposTransferData
                 var categoryService = new CategoryService(SqlConnection, DestinationConnection);
                 return categoryService;
             })
+             .AddSingleton<IsaleService>((provider) =>
+             {
+                 var saleService = new SaleService(SqlConnection, DestinationConnection);
+                 return saleService;
+             })
             .AddSingleton<IProductService>((provider) =>
             {
                 var productService = new ProductService(SqlConnection, DestinationConnection);
