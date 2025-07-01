@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace IposTransferData.Enum
+{
+    public enum UserTypes
+    {
+        UNKNOWN,
+        CUSTOMER,
+        SUPPORT
+    }
+
+    public enum Genders
+    {
+        UNKNOWN,
+        MALE,
+        FEMALE
+    }
+}
