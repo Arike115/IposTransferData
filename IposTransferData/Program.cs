@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading;
 using IposTransferData.Enum;
+using IposTransferData.Services.IposUsers;
 
 namespace IposTransferData
 {
@@ -48,7 +49,9 @@ namespace IposTransferData
             var categoryService = ServiceProvider.GetService<ICategoryService>();
             var productService = ServiceProvider.GetService<IProductService>();
             var saleService = ServiceProvider.GetService<IsaleService>();
+            var iposUserService = ServiceProvider.GetService<IIposUserService>();
 
+            await MigrateIposUsers(iposUserService);
 
             Console.WriteLine("About to process the categories");
             Console.WriteLine();
@@ -101,42 +104,65 @@ namespace IposTransferData
 
                 Console.WriteLine("Successfully saved the category whose name is ==> " + data.AmountTender);
                 Console.WriteLine("About fetching the list of products under the category whose name is ==> " + data.AmountTender);
-                
+
                 var products = await saleService.GetSaleById(data.Id.ToString());
 
-               
-                    Console.WriteLine("Currently processing the product whose name is ==>  " + data.PaymentType);
-                    Console.WriteLine("About saving the product whose name is ==> " + data.PaymentType);
 
-                    var prod = new Payment()
-                    {
-                        Id = Guid.NewGuid(),
-                        Sale_Id = saledata.Id,
-                        PaymentType = data.PaymentType,
-                        PaymentAmount = (double)data.NetCost,
-                        PaymentCategory = PaymentCategory.SINGLEPAYEMENT,
-                        IsDeleted = data.IsDeleted,
-                        CreatedBy = data.CreatedBy,
-                        ModifiedBy = data.ModifiedBy,
-                        ModifiedOn = data.ModifiedOn, 
-                        CreatedOn = data.CreatedOn,
-                    }; 
+                Console.WriteLine("Currently processing the product whose name is ==>  " + data.PaymentType);
+                Console.WriteLine("About saving the product whose name is ==> " + data.PaymentType);
 
-                    await saleService.InsertPaymentDate(prod);
+                var prod = new Payment()
+                {
+                    Id = Guid.NewGuid(),
+                    Sale_Id = saledata.Id,
+                    PaymentType = data.PaymentType,
+                    PaymentAmount = (double)data.NetCost,
+                    PaymentCategory = PaymentCategory.SINGLEPAYEMENT,
+                    IsDeleted = data.IsDeleted,
+                    CreatedBy = data.CreatedBy,
+                    ModifiedBy = data.ModifiedBy,
+                    ModifiedOn = data.ModifiedOn,
+                    CreatedOn = data.CreatedOn,
+                };
 
-                    Console.WriteLine("Successfully saved the product whose name is " + data.AmountTender);
-                    Console.WriteLine();
-                    Console.WriteLine();
-                    Console.WriteLine("Successfully saved the product");
-                
+                await saleService.InsertPaymentDate(prod);
+
+                Console.WriteLine("Successfully saved the product whose name is " + data.AmountTender);
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine("Successfully saved the product");
+
             }
         }
 
-        
+        private static async Task MigrateIposUsers(IIposUserService iposUserService)
+        {
+            Console.WriteLine("About to process the IposUsers");
+            Console.WriteLine();
+
+            var users = await iposUserService.GetUsersAsync();
+
+            Console.WriteLine("The total number of users is => " + users.Count());
+            Console.WriteLine();
+            Console.WriteLine("Currently looping through the users");
+
+            foreach (var user in users)
+            {
+                await iposUserService.InsertUserAsync(user);
+            }
+            Console.WriteLine("Ended processing Ipos users");
+            Console.WriteLine();
+        }
+
         private static void GetServiceProvider()
         {
             //setup our DI
             ServiceProvider = new ServiceCollection()
+            .AddSingleton<IIposUserService>((provider) =>
+            {
+                var iposUserService = new IposUserService(SqlConnection, DestinationConnection);
+                return iposUserService;
+            })
             .AddSingleton<ICategoryService>((provider) =>
             {
                 var categoryService = new CategoryService(SqlConnection, DestinationConnection);

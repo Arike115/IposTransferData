@@ -9,22 +9,7 @@ namespace IposTransferData.Model
 {
     public class IposUser
     {
-        
-        public  DateTimeOffset? LockoutEnd { get; set; }
-        public  bool TwoFactorEnabled { get; set; }
-        public  bool PhoneNumberConfirmed { get; set; }
-        public  string? PhoneNumber { get; set; }
-        public  string? ConcurrencyStamp { get; set; }
-        public  string? SecurityStamp { get; set; }
-        public  string? PasswordHash { get; set; }
-        public  bool EmailConfirmed { get; set; }
-        public string? NormalizedEmail { get; set; }
-        public string? Email { get; set; }
-        public string? NormalizedUserName { get; set; }
-        public string? UserName { get; set; }
         public Guid Id { get; set; }
-        public virtual bool LockoutEnabled { get; set; }
-        public virtual int AccessFailedCount { get; set; }
         public string RefreshToken { get; set; }
         public string LastName { get; set; }
         public string FirstName { get; set; }
@@ -60,8 +45,19 @@ namespace IposTransferData.Model
         public string Address { get; set; }
         public string TimeZone { get; set; }
         public bool NewStoreAssigned { get; set; }
-        public DateTimeOffset? CreatedOn { get; set; }
-        public DateTimeOffset? ModifiedOn { get; set; }
-      
+        public string? UserName { get; set; }
+        public string? NormalizedUserName { get; set; }
+        public string? Email { get; set; }
+        public string? NormalizedEmail { get; set; }
+        public bool EmailConfirmed { get; set; }
+        public string? PasswordHash { get; set; }
+        public string? SecurityStamp { get; set; }
+        public string? ConcurrencyStamp { get; set; }
+        public string? PhoneNumber { get; set; }
+        public bool PhoneNumberConfirmed { get; set; }
+        public bool TwoFactorEnabled { get; set; }
+        public DateTimeOffset? LockoutEnd { get; set; }
+        public virtual bool LockoutEnabled { get; set; }
+        public virtual int AccessFailedCount { get; set; }
     }
 }
