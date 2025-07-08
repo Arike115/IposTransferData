@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace IposTransferData.Model
 {
-    public class Supplier
+    public class Supplier : BaseEntity
     {
-        public long RowNo;
-
         public string Name { get; set; }
         public string Description { get; set; }
         public string RCNumber { get; set; }
@@ -26,9 +24,5 @@ namespace IposTransferData.Model
         public string ContactEmail3 { get; set; }
         public Guid? Business_Id { get; set; }
         public Guid? Store_Id { get; set; }
-        public DateTimeOffset? CreatedOn { get; set; }
-        public DateTimeOffset? ModifiedOn { get; set; }
-        public string CreatedBy { get; set; }
-        public string ModifiedBy { get; set; }
     }
 }

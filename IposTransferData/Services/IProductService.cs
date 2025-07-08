@@ -11,5 +11,7 @@ namespace IposTransferData.Services
         Task<IEnumerable<ProductDto>> GetProducts();
         Task<IEnumerable<ProductDto>> GetProductsByCategoryId(int category_UId);
         Task InsertProductData(Item Prod);
+        Task<IEnumerable<Item>> GetItemsAsync();
+        Task InsertItemAsync(Item item);
     }
 }

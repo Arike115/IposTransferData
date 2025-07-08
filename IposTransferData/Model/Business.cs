@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace IposTransferData.Model
 {
-    public class Business
-    {
+    public class Business : BaseEntity
+    { 
         public string UniqueCode { get; set; }
         public string RefCode { get; set; }
         public string Name { get; set; }
@@ -35,9 +35,5 @@ namespace IposTransferData.Model
         public Guid? LastActivityUserId { get; set; }
         public DateTimeOffset? LastActivityDate { get; set; }
         public string TimeZone { get; set; }
-        public DateTimeOffset? CreatedOn { get; set; }
-        public DateTimeOffset? ModifiedOn { get; set; }
-        public string CreatedBy { get; set; }
-        public string ModifiedBy { get; set; }
     }
 }

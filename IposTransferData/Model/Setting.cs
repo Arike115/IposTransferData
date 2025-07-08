@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IposTransferData.Model
 {
-    public class Settings
+    public class Setting : BaseEntity
     {
         public bool IsDefault { get; set; }
         public int? Type { get; set; }
@@ -16,9 +16,5 @@ namespace IposTransferData.Model
         public Guid? Store_Id { get; set; }
         public string Title { get; set; }
         public bool IncludePrice { get; set; }
-        public DateTimeOffset? CreatedOn { get; set; }
-        public DateTimeOffset? ModifiedOn { get; set; }
-        public string CreatedBy { get; set; }
-        public string ModifiedBy { get; set; }
     }
 }

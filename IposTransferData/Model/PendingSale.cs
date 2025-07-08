@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace IposTransferData.Model
 {
-    public class PendingSale
+    public class PendingSale : BaseEntity
     {
         public string CustomerDetail { get; set; }
         public Guid? Customer_Id { get; set; }

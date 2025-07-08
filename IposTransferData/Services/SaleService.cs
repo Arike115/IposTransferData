@@ -65,9 +65,7 @@ namespace IposTransferData.Services
 
             if (_sqlConnection.State != ConnectionState.Open)
                 _sqlConnection.Open();
-            var sql = @"select * From sale p
-                        WHERE p.IsDeleted <> 1
-                        ORDER BY p.ModifiedOn DESC";
+            var sql = @"select * From sale";
 
             var sale = await _sqlConnection.QueryAsync<SaleDto>(sql, null);
             return sale;

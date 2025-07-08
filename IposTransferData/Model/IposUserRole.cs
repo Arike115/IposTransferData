@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace IposTransferData.Model
 {
-    internal class IposUserRole
+    public class IposUserRole
     {
+        public Guid UserId { get; set; }
+        public Guid RoleId { get; set; }
     }
 }

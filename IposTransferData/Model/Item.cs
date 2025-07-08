@@ -9,10 +9,8 @@ using System.Threading.Tasks;
 
 namespace IposTransferData.Model
 {
-    public class Item
-    {
-        public Guid? Id { get; set; }
-        public byte[] RowVersion { get; set; }
+    public class Item : BaseEntity
+    { 
         public string Barcode { get; set; }
         public double Quantity { get; set; }
         public string Title { get; set; }
@@ -39,11 +37,6 @@ namespace IposTransferData.Model
         public Guid? Store_Id { get; set; }
         public string? TitleSlug { get; set; }
         public bool IsFavourite { get; set; }
-        public DateTimeOffset? CreatedOn { get; set; }
-        public DateTimeOffset? ModifiedOn { get; set; }
-        public bool IsDeleted { get; set; }
-        public string CreatedBy { get; set; }
-        public string ModifiedBy { get; set; }
 
         public static explicit operator Item(ProductDto source)
         {

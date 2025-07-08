@@ -26,9 +26,12 @@ namespace IposTransferData.Services.IposUsers
             if (_sqlConnection.State != ConnectionState.Open)
                 _sqlConnection.Open();
 
-            var sql = @"SELECT * FROM IposUser";
+            string[] defaultUsers = { "systemuser@ipos.com", "smeuser@ipos.com", "support@smartware.com", "malpractice@defjamz.com", "manager@ipos.com",
+                "iposadmin@ipos.com", "basicuser@ipos.com", "czarface@wutang.com" };
 
-            var users = await _sqlConnection.QueryAsync<IposUser>(sql, null);
+            var sql = @"SELECT * FROM IposUser WHERE UserName NOT IN @defaultUsers";
+
+            var users = await _sqlConnection.QueryAsync<IposUser>(sql, new { defaultUsers  = defaultUsers });
             return users;
         }
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace IposTransferData.Model
 {
-    public class SaleItem
+    public class SaleItem : BaseEntity
     {
         public Guid? PendingSale_Id { get; set; }
         public Guid? Sale_Id { get; set; }
@@ -32,10 +32,5 @@ namespace IposTransferData.Model
         public string Remarks { get; set; }
         public string CurrencyCode { get; set; }
         public SalesStatus SalesStatus { get; set; }
-        public DateTimeOffset? CreatedOn { get; set; }
-        public DateTimeOffset? ModifiedOn { get; set; }
-        public bool IsDeleted { get; set; }
-        public string CreatedBy { get; set; }
-        public string ModifiedBy { get; set; }
     }
 }

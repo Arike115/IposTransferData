@@ -84,5 +84,38 @@ namespace IposTransferData.Services
             await _destinationConnection.ExecuteAsync(sql, parameter);
            
         }
+
+        public async Task<IEnumerable<Item>> GetItemsAsync()
+        {
+            if (_sqlConnection.State != ConnectionState.Open)
+                _sqlConnection.Open();
+
+            var sql = @"select * from Item where CreatedBy<>'1989883f-4f99-43bf-a754-239bbbfec00e'";
+            var items = await _sqlConnection.QueryAsync<Item>(sql);
+            return items;
+        }
+
+        public async Task InsertItemAsync(Item item)
+        {
+            if (_destinationConnection.State != ConnectionState.Open)
+                _destinationConnection.Open();
+
+            var sql = @"
+        INSERT INTO Item (
+            Id, CreatedOn, ModifiedOn, DeletedOn, CreatedBy, ModifiedBy, DeletedBy, IsDeleted,
+            Barcode, Quantity, Title, Description, KeyFeatures, Specification, Brand,
+            Weight, ItemsType, ReorderLevel, SellingCost, PreviousSellingCost, ActualCost, IsDiscountable,
+            DiscountLimit, IsDiscontinue, ItemCode, LogoUrl, LogoName, LogoFileSize, LogoOriginalFileName,
+            ExtraCharge, Business_Id, Store_Id, TitleSlug, IsFavourite
+        ) VALUES (
+            @Id, @CreatedOn, @ModifiedOn, @DeletedOn, @CreatedBy, @ModifiedBy, @DeletedBy, @IsDeleted,
+            @Barcode, @Quantity, @Title, @Description, @KeyFeatures, @Specification, @Brand,
+            @Weight, @ItemsType, @ReorderLevel, @SellingCost, @PreviousSellingCost, @ActualCost, @IsDiscountable,
+            @DiscountLimit, @IsDiscontinue, @ItemCode, @LogoUrl, @LogoName, @LogoFileSize, @LogoOriginalFileName,
+            @ExtraCharge, @Business_Id, @Store_Id, @TitleSlug, @IsFavourite
+        );";
+
+            await _destinationConnection.ExecuteAsync(sql, item);
+        }
     }
 }

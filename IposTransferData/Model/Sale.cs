@@ -9,9 +9,8 @@ using System.Threading.Tasks;
 
 namespace IposTransferData.Model
 {
-    public class Sale
+    public class Sale : BaseEntity
     {
-        public Guid? Id { get; set; }
         public string RefNo { get; set; }
         public decimal NetPrice { get; set; }
         public decimal Cost { get; set; }
@@ -37,44 +36,5 @@ namespace IposTransferData.Model
         public decimal OtherPaymentAmount { get; set; }
         public decimal WalletAmount { get; set; }
         public string CurrencyCode { get; set; }
-        public DateTimeOffset? CreatedOn { get; set; }
-        public DateTimeOffset? ModifiedOn { get; set; }
-        public bool IsDeleted { get; set; }
-        public string CreatedBy { get; set; }
-        public string ModifiedBy { get; set; }
-
-
-        public static explicit operator Sale(SaleDto source)
-        {
-            var destination = new Sale();
-            destination.Id = source.Id;
-            destination.RefNo = source.RefNo;
-            destination.NetPrice = source.NetPrice;
-            destination.NetCost = source.NetCost;
-            destination.Cost = source.Cost;
-            destination.Discount = source.Discount;
-            destination.NetItemDiscount = source.NetItemDiscount;
-            destination.SumQuantity = source.SumQuantity;
-            destination.ExtraCharges = source.ExtraCharges;
-            destination.Customer_Id = source.Customer_Id;
-            destination.CustomerDetail = source.CustomerDetail;
-            destination.PaymentType = source.PaymentType;
-            destination.Business_Id = source.Business_Id;
-            destination.Status = source.Status;
-            destination.Store_Id = source.Store_Id;
-            destination.StoreDetail = source.StoreDetail;
-            destination.Remarks = source.Remarks;
-            destination.TransactionDate = source.TransactionDate;
-            destination.ValueDate = source.ValueDate;
-            destination.DueDate = source.DueDate;
-            destination.AmountTender = source.AmountTender;
-            destination.CurrencyCode = source.CurrencyCode;
-            destination.CreatedBy = source.CreatedBy;
-            destination.ModifiedBy = source.ModifiedBy;
-            destination.CreatedOn = source.CreatedOn;
-            destination.ModifiedOn = source.ModifiedOn;
-            destination.IsDeleted = source.IsDeleted;
-            return destination;
-        }
     }
 }
