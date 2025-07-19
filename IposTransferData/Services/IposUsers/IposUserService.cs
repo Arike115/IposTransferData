@@ -35,6 +35,20 @@ namespace IposTransferData.Services.IposUsers
             return users;
         }
 
+        public async Task<bool> UserExists(string userName)
+        {
+            if(_destinationConnection.State != ConnectionState.Open)    
+                _destinationConnection.Open();
+
+            var sql = "SELECT TOP 1 * FROM IposUser WHERE UserName = @UserName OR Email = @UserName;";
+            var user = await _destinationConnection.QueryAsync<IposUser>(sql, new
+            {
+                UserName = userName
+            });
+
+            return user == null;
+        }
+
         public async Task InsertUserAsync(IposUser user)
         {
             if (_destinationConnection.State != ConnectionState.Open)

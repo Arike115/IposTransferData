@@ -97,7 +97,7 @@ namespace IposTransferData
 
             await MigrateStores(storeService);
 
-            await MigrateIposUsers(iposUserService);
+            await MigrateIposUsers(iposUserService, storeService);
 
             await MigrateIposRoles(iposRoleService);
 
@@ -670,7 +670,7 @@ namespace IposTransferData
             Console.WriteLine();
         }
 
-        private static async Task MigrateIposUsers(IIposUserService iposUserService)
+        private static async Task MigrateIposUsers(IIposUserService iposUserService, IStoreService storeService)
         {
             Console.WriteLine("About to process the IposUsers");
             Console.WriteLine();
@@ -683,8 +683,38 @@ namespace IposTransferData
 
             foreach (var user in users)
             {
+                if (string.IsNullOrWhiteSpace(user.UserName))
+                if (await iposUserService.UserExists(user.UserName))
+                {
+                    continue;
+                }
+
+                if (string.IsNullOrWhiteSpace(user.Email))
+                    if (await iposUserService.UserExists(user.Email))
+                    {
+                        continue;
+                    }
+
                 if (string.IsNullOrWhiteSpace(user.TimeZone))
                     user.TimeZone = LogicConstants.TimeZoneStandardName;
+
+                if(user.Activated && user.Business_Id is not null)
+                {
+                    user.RegState = 4;
+                }
+                else if(!user.Activated && user.Business_Id is not null)
+                {
+                    user.RegState = 4;
+                }
+                else
+                {
+                    user.RegState = 2;
+                }
+                if (user.Business_Id is not null && user.Store_Id is null)
+                {
+                    var store = await storeService.GetStoreByBusiness((Guid)user.Business_Id);
+                    user.Store_Id = store?.Id;
+                }
 
                 if (user.PhoneNumber.StartsWith("deleted"))
                 {

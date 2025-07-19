@@ -11,5 +11,6 @@ namespace IposTransferData.Services.IposUsers
     {
         Task<IEnumerable<IposUser>> GetUsersAsync();
         Task InsertUserAsync(IposUser user);
+        Task<bool> UserExists(string userName);
     }
 }

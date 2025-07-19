@@ -31,6 +31,19 @@ namespace IposTransferData.Services.Stores
             return stores;
         }
 
+        public async Task<Store> GetStoreByBusiness(Guid businessId)
+        {
+            if (_sqlConnection.State != ConnectionState.Open)
+                _sqlConnection.Open();
+
+            var sql = @"SELECT TOP 1 * FROM Store WHERE Business_Id = @BusinessId";
+            var stores = await _sqlConnection.QueryAsync<Store>(sql, new
+            {
+                BusinessId = businessId
+            });
+            return stores.FirstOrDefault();
+        }
+
         public async Task InsertStoreAsync(Store store)
         {
             if (_destinationConnection.State != ConnectionState.Open)

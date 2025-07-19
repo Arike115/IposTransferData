@@ -11,5 +11,6 @@ namespace IposTransferData.Services.Stores
     {
         Task<IEnumerable<Store>> GetStoresAsync();
         Task InsertStoreAsync(Store store);
+        Task<Store> GetStoreByBusiness(Guid businessId);
     }
 }
