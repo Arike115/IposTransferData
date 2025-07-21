@@ -51,10 +51,10 @@ namespace IposTransferData.Services.Categories
 
             var sql = @"INSERT INTO Category (
             Id, CreatedOn, ModifiedOn, DeletedOn, CreatedBy, ModifiedBy, DeletedBy, IsDeleted,
-            Title, Description, ParentCategory_Id, LogoFileSize
+            Title, Description, ParentCategory_Id, LogoFileSize, LogoUrl, LogoName, LogoOriginalFileName, Business_Id, Store_Id
             ) VALUES (
                 @Id, @CreatedOn, @ModifiedOn, @DeletedOn, @CreatedBy, @ModifiedBy, @DeletedBy, @IsDeleted,
-                @Title, @Description, @ParentCategory_Id, @LogoFileSize
+                @Title, @Description, @ParentCategory_Id, @LogoFileSize, @LogoUrl, @LogoName, @LogoOriginalFileName, @Business_Id, @Store_Id
             );";
 
             await _destinationConnection.ExecuteAsync(sql, category);
