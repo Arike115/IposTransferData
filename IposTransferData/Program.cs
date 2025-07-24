@@ -515,7 +515,7 @@ namespace IposTransferData
 
             foreach (var data in sale)
             {
-               // Console.WriteLine("Currently processing the sales whose Id is ==>  " + data.Id);
+                // Console.WriteLine("Currently processing the sales whose Id is ==>  " + data.Id);
 
                 var saledata = new Sale()
                 {
@@ -549,7 +549,7 @@ namespace IposTransferData
                     CreatedOn = data.CreatedOn ?? DateTime.Now,
                 };
 
-              //  Console.WriteLine("About saving the sale whose Id is ==> " + data.AmountTender);
+                //  Console.WriteLine("About saving the sale whose Id is ==> " + data.AmountTender);
 
                 await saleService.InsertSaleData(saledata);
 
@@ -684,10 +684,10 @@ namespace IposTransferData
             foreach (var user in users)
             {
                 if (string.IsNullOrWhiteSpace(user.UserName))
-                if (await iposUserService.UserExists(user.UserName))
-                {
-                    continue;
-                }
+                    if (await iposUserService.UserExists(user.UserName))
+                    {
+                        continue;
+                    }
 
                 if (string.IsNullOrWhiteSpace(user.Email))
                     if (await iposUserService.UserExists(user.Email))
@@ -698,11 +698,11 @@ namespace IposTransferData
                 if (string.IsNullOrWhiteSpace(user.TimeZone))
                     user.TimeZone = LogicConstants.TimeZoneStandardName;
 
-                if(user.Activated && user.Business_Id is not null)
+                if (user.Activated && user.Business_Id is not null)
                 {
                     user.RegState = 4;
                 }
-                else if(!user.Activated && user.Business_Id is not null)
+                else if (!user.Activated && user.Business_Id is not null)
                 {
                     user.RegState = 4;
                 }
@@ -721,6 +721,8 @@ namespace IposTransferData
                     var phoneNumber = user.PhoneNumber.Split('-');
                     user.PhoneNumber = phoneNumber[1];
                 }
+                user.IsOldUser = true;
+                user.OldPasswordChanged = false;
                 await iposUserService.InsertUserAsync(user);
             }
             Console.WriteLine("Ended processing Ipos users");

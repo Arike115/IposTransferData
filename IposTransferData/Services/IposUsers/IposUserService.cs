@@ -65,7 +65,7 @@ namespace IposTransferData.Services.IposUsers
                 UserName, NormalizedUserName, Email, NormalizedEmail, EmailConfirmed,
                 PasswordHash, SecurityStamp, ConcurrencyStamp, PhoneNumber,
                 PhoneNumberConfirmed, TwoFactorEnabled, LockoutEnd, LockoutEnabled,
-                AccessFailedCount
+                AccessFailedCount, IsOldUser, OldPasswordChanged
             )
             VALUES (
                 @Id, @RefreshToken, @LastName, @FirstName, @MiddleName, @StaffNo, @Department,
@@ -77,7 +77,7 @@ namespace IposTransferData.Services.IposUsers
                 @UserName, @NormalizedUserName, @Email, @NormalizedEmail, @EmailConfirmed,
                 @PasswordHash, @SecurityStamp, @ConcurrencyStamp, @PhoneNumber,
                 @PhoneNumberConfirmed, @TwoFactorEnabled, @LockoutEnd, @LockoutEnabled,
-                @AccessFailedCount
+                @AccessFailedCount, @IsOldUser, @OldPasswordChanged
             );";
 
             await _destinationConnection.ExecuteAsync(sql, user);

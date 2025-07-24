@@ -59,5 +59,7 @@ namespace IposTransferData.Model
         public DateTimeOffset? LockoutEnd { get; set; }
         public virtual bool LockoutEnabled { get; set; }
         public virtual int AccessFailedCount { get; set; }
+        public bool IsOldUser { get; set; }
+        public bool OldPasswordChanged { get; set; }
     }
 }
